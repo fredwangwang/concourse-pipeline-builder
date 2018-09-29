@@ -2,7 +2,7 @@ package builder
 
 type Job struct {
 	Name                 string   `yaml:"name,omitempty"`
-	Plan                 []Step   `yaml:"plan,omitempty"`
+	Plan                 Steps    `yaml:"plan,omitempty"`
 	Serial               bool     `yaml:"serial,omitempty"`
 	SerialGroups         []string `yaml:"serial_groups,omitempty"`
 	BuildLogsToRetain    int      `yaml:"build_logs_to_retain,omitempty"`

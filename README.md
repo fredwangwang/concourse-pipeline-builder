@@ -78,6 +78,32 @@ jobs:
   - get: tile
     params:
       globs: []
+  - task: hello
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: ubuntu
+      inputs:
+      - name: config
+      outputs:
+      - name: config-updated
+      caches:
+      - path: temp-res
+      run:
+        path: bash
+        args:
+        - -c
+        - |2-
+
+          set -eux
+          echo "$HELLO_STR"
+      params:
+        HELLO_STR: ""
+    params:
+      HELLO_STR: hello-world
+    attempts: 2
 groups:
 - name: a-group
   jobs:

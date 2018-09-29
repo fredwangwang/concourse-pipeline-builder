@@ -55,9 +55,55 @@ func main() {
 		},
 	}
 
+	stepTask := StepTask{
+		Task: "hello",
+		Config: TaskConfig{
+			Platform: "linux",
+			ImageResource: TaskImageResource{
+				Type: "docker-image",
+				Source: map[string]interface{}{
+					"repository": "ubuntu",
+				},
+			},
+			Inputs: []TaskInput{
+				{
+					Name: "config",
+				},
+			},
+			Outputs: []TaskOutput{
+				{
+					Name: "config-updated",
+				},
+			},
+			Caches: []TaskCache{
+				{
+					Path: "temp-res",
+				},
+			},
+			Run: TaskRun{
+				Path: "bash",
+				Args: []string{
+					`-c`,
+					`
+set -eux
+echo "$HELLO_STR"`,
+				},
+			},
+			Params: map[string]interface{}{
+				"HELLO_STR": "",
+			},
+		},
+		Params: map[string]interface{}{
+			"HELLO_STR": "hello-world",
+		},
+		StepHook: StepHook{
+			Attempts: 2,
+		},
+	}
+
 	job1 := Job{
 		Name: "regulator",
-		Plan: []Step{stepSchedule, stepGetTile},
+		Plan: Steps{stepSchedule, stepGetTile, stepTask},
 	}
 
 	a := Pipeline{
