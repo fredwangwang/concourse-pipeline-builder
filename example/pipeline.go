@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-var ResourceTypePivnet = ResourceType{
+var ResourceTypePivnet = ResourceTypeGeneric{
 	Name: "pivnet",
 	Type: "docker-image",
 	Source: map[string]interface{}{
@@ -62,7 +62,7 @@ func main() {
 
 	a := Pipeline{
 		Name: "",
-		ResourceTypes: []ResourceType{
+		ResourceTypes: ResourceTypes{
 			ResourceTypePivnet,
 		},
 		Resources: []Resource{
