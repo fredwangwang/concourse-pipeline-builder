@@ -1,9 +1,8 @@
 package main
 
 import (
-	. "github.com/fredwangwang/concourse-pipeline-builder/builder"
-
 	"fmt"
+	. "github.com/fredwangwang/concourse-pipeline-builder/builder"
 	"gopkg.in/yaml.v2"
 	"log"
 )
@@ -14,15 +13,6 @@ var ResourceTypePivnet = ResourceType{
 	Source: map[string]interface{}{
 		"repository": "pivotalcf/pivnet-resource",
 		"tag":        "latest-final",
-	},
-}
-
-var ResourcePcfPipelines = Resource{
-	Name: "pcf-pipelines",
-	Type: "git",
-	Source: map[string]interface{}{
-		"uri":    "git@github.com:pivotal-cf/pcf-pipelines.git",
-		"branch": "master",
 	},
 }
 
@@ -48,39 +38,48 @@ var ResourceSchedule = Resource{
 }
 
 func main() {
+	stepSchedule := StepGet{
+		Get:     "schedule",
+		Trigger: true,
+		StepHook: StepHook{
+			Tags: []string{
+				"test",
+			},
+		},
+	}
+
+	stepGetTile := StepGet{
+		Get: "tile",
+		Params: map[string]interface{}{
+			"globs": []string{},
+		},
+	}
+
+	job1 := Job{
+		Name: "regulator",
+		Plan: []Step{stepSchedule, stepGetTile},
+	}
+
 	a := Pipeline{
-		//Name: "testing123",
+		Name: "",
 		ResourceTypes: []ResourceType{
 			ResourceTypePivnet,
 		},
 		Resources: []Resource{
-			ResourcePcfPipelines,
 			ResourcePASTile,
 			ResourceSchedule,
 		},
 		Jobs: []Job{
+			job1,
+		},
+		Groups: []Group{
 			{
-				Name: "regulator",
-				Plan: []Step{
-					StepGet{
-						Get:     "schedule",
-						Trigger: true,
-						StepHook: StepHook{
-							Tags: []string{
-								"test",
-							},
-						},
-					},
-					StepGet{
-						Get: "tile",
-						Params: map[string]interface{}{
-							"globs": []string{},
-						},
-					},
+				Name: "a-group",
+				Jobs: []Job{
+					job1,
 				},
 			},
 		},
-		Groups: nil,
 	}
 
 	content, err := yaml.Marshal(a)

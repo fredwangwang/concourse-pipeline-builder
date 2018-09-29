@@ -48,11 +48,6 @@ resource_types:
     repository: pivotalcf/pivnet-resource
     tag: latest-final
 resources:
-- name: pcf-pipelines
-  type: git
-  source:
-    branch: master
-    uri: git@github.com:pivotal-cf/pcf-pipelines.git
 - name: tile
   type: pivnet
   source:
@@ -83,6 +78,10 @@ jobs:
   - get: tile
     params:
       globs: []
+groups:
+- name: a-group
+  jobs:
+  - regulator
 ```
 
 ## Random
