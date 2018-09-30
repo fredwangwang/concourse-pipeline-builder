@@ -202,6 +202,9 @@ func unmarshalStep(dst interface{}, internal interface{}, unmarshal func(interfa
 
 	for i := 0; i < typeStepHook.NumField(); i++ {
 		fieldName := typeStepHook.Field(i).Name
+		if _, ok := typeStep.FieldByName(fieldName); !ok {
+			continue
+		}
 		valStep.FieldByName(fieldName).Set(valStepHook.Field(i))
 	}
 
