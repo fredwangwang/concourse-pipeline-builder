@@ -45,4 +45,17 @@ groups:
 		Expect(err).NotTo(HaveOccurred())
 		Expect(string(yamlBytes)).To(MatchYAML(yamlStr))
 	})
+
+	It("validates", func() {
+		group := Group{}
+		str := "{}"
+
+		err := yaml.Unmarshal([]byte(str), &group)
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(ContainSubstring("'Name' failed on the 'required' tag"))
+
+		_, err = yaml.Marshal(group)
+		Expect(err).To(HaveOccurred())
+		Expect(err.Error()).To(ContainSubstring("'Name' failed on the 'required' tag"))
+	})
 })
