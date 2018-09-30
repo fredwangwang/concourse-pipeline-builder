@@ -10,17 +10,24 @@ import (
 
 var _ = Describe("Group", func() {
 	var yamlStr = `
+jobs:
+- name: j1
 groups:
 - name: a-group
-  jobs: [ "j1", "j2" ]
+  jobs: [ "j1" ]
 `
 
 	var pipeStruct = Pipeline{
+		Jobs: []Job{
+			{
+				Name: "j1",
+			},
+		},
 		Groups: []Group{
 			{
 				Name: "a-group",
 				Jobs: []Job{
-					{Name: "j1"}, {Name: "j2"},
+					{Name: "j1"},
 				},
 			},
 		},
