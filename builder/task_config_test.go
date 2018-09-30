@@ -103,4 +103,10 @@ echo "$HELLO_STR"
 		Expect(err).NotTo(HaveOccurred())
 		Expect(pipe).To(Equal(pipeStruct))
 	})
+
+	It("marshals the task config section", func() {
+		yamlBytes, err := yaml.Marshal(pipeStruct)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(yamlBytes)).To(MatchYAML(yamlStr))
+	})
 })

@@ -1,5 +1,7 @@
 package builder
 
+// TODO: add validate
+
 type TaskConfig struct {
 	Platform      string                 `yaml:"platform,omitempty"`
 	ImageResource TaskImageResource      `yaml:"image_resource,omitempty"`

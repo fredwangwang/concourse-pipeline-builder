@@ -186,6 +186,8 @@ echo "$SOME-FIELD"
 	})
 
 	It("marshals step section", func() {
-
+		yamlBytes, err := yaml.Marshal(pipeStruct)
+		Expect(err).NotTo(HaveOccurred())
+		Expect(string(yamlBytes)).To(MatchYAML(yamlStr))
 	})
 })
