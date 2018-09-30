@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-var ResourceTypePivnet = ResourceTypeGeneric{
+var ResourceTypePivnet = ResourceType{
 	Name: "pivnet",
 	Type: "docker-image",
 	Source: map[string]interface{}{

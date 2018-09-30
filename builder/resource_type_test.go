@@ -19,7 +19,7 @@ resource_types:
 
 	var pipeStruct = Pipeline{
 		ResourceTypes: ResourceTypes{
-			ResourceTypeGeneric{
+			ResourceType{
 				Name: "pivnet",
 				Type: "something",
 				Source: map[string]interface{}{
@@ -44,7 +44,7 @@ resource_types:
 	})
 
 	It("validates", func() {
-		rt := ResourceTypeGeneric{}
+		rt := ResourceType{}
 		err := rt.Validate()
 		Expect(err).To(HaveOccurred())
 		Expect(err.Error()).To(ContainSubstring("'Name' failed on the 'required' tag"))
