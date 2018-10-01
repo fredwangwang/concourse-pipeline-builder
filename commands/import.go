@@ -14,8 +14,8 @@ import (
 )
 
 type Import struct {
-	Config string `short:"c" long:"config" description:"path to the pipeline yaml"        required:"true" validate:"file"`
-	Name   string `short:"n" long:"name"   description:"name of the imported pipeline"    required:"true" validate:"alphanum"`
+	Config string `short:"c" long:"config" description:"path to the pipeline yaml"        required:"true"`
+	Name   string `short:"n" long:"name"   description:"name of the imported pipeline"    required:"true"`
 	Output string `short:"o" long:"output" description:"path to the folder to be created" required:"true"`
 }
 
