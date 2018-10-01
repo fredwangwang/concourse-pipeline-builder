@@ -1,0 +1,60 @@
+name: a-pipeline
+resource_types:
+- name: pivnet
+  type: docker-image
+  source:
+    repository: pivotalcf/pivnet-resource
+    tag: latest-final
+- name: awesome-resource
+  type: docker-image
+  source:
+    repository: awesome/resource
+  privileged: true
+  check_every: 5m
+  tags: [ "awesome-worker" ]
+resources:
+- name: some-pivnet-product
+  type: pivnet
+  source:
+    api_token: token
+- name: awesome-product
+  type: awesome-resource
+  source:
+    awesome: true
+  version: latest
+  webhook_token: localhost/check_if_awesome
+jobs:
+- name: job1
+  plan:
+  - aggregate:
+    - get: res1
+      resource: some-pivnet-product
+    - get: res2
+      resource: awesome-product
+      timeout: 24h
+      attempts: 12345
+  - task: task1
+    file: some/file.yml
+    on_success:
+      get: some-pivnet-product
+    on_failure:
+      put: awesome-product
+      params:
+        awesome: false
+  - put: awesome-product
+- name: job2
+  plan:
+  - get: awesome-product
+groups:
+- name: all
+  jobs:
+  - job1
+  - job2
+  resources:
+  - some-pivnet-product
+  - awesome-product
+- name: j2
+  jobs:
+  - job2
+  resources:
+  - awesome-product

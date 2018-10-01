@@ -38,6 +38,32 @@ using a more structured language (golang), which allows:
 - [ ] Make it a cli?
 - [ ] todo?
 
+## CLI Usage
+currently only `import` is implemented.
+
+```bash
+$ go run main.go import -h # print usage
+2018/10/01 00:00:37 Usage:
+  main [OPTIONS] import [import-OPTIONS]
+
+Help Options:
+  -h, --help        Show this help message
+
+[import command options]
+      -c, --config= path to the pipeline yaml
+      -n, --name=   name of the imported pipeline
+      -o, --output= path to the folder to be created
+$ go run main.go import -c your-existing-pipeline.yml -n pipeline123 -o ./test # import the pipeline
+$ ls test
+main.go
+$ go run test/main.go # print the imported pipeline to stdout
+name: pipeline123
+......
+```
+
+There are lots of improving opportunities to this command, right now it is a working prototype 
+of how I want it to work.
+
 ## Example
 See `example/pipeline.go`, it will generate the following pipeline:
 ```yaml
