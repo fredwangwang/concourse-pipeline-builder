@@ -50,7 +50,7 @@ jobs:
 						Task: "hello",
 						Config: &TaskConfig{
 							Platform: "linux",
-							ImageResource: TaskImageResource{
+							ImageResource: &TaskImageResource{
 								Type: "docker-image",
 								Source: map[string]interface{}{
 									"repository": "ubuntu",
@@ -71,7 +71,7 @@ jobs:
 									Path: "temp-res",
 								},
 							},
-							Run: TaskRun{
+							Run: &TaskRun{
 								Path: "bash",
 								Args: []string{
 									`-c`,
@@ -108,5 +108,92 @@ echo "$HELLO_STR"
 		yamlBytes, err := yaml.Marshal(pipeStruct)
 		Expect(err).NotTo(HaveOccurred())
 		Expect(string(yamlBytes)).To(MatchYAML(yamlStr))
+	})
+
+	It("generates proper code section", func() {
+		imageResource := TaskImageResource{
+			Type: "docker",
+			Source: map[string]interface{}{
+				"from": "something",
+			},
+			Params: map[string]interface{}{
+				"to": "somewhere",
+			},
+			Version: map[string]interface{}{
+				"i":    "actually",
+				"dont": "know",
+				"if":   "this",
+				"is":   "been used",
+			},
+		}
+
+		imageName := imageResource.Generate()
+		result, ok := StepNameToBlock[imageName]
+		Expect(ok).To(BeTrue())
+		GinkgoWriter.Write([]byte(result))
+		Expect(result).To(ContainSubstring("var TaskImageResourceaf6e4556101cbde"))
+
+		taskConfig := TaskConfig{
+			Platform:      "linux",
+			ImageResource: &imageResource,
+			RootfsUri:     "aaa",
+			Inputs: []TaskInput{
+				{
+					Name:     "in",
+					Path:     "path",
+					Optional: true,
+				},
+			},
+			Outputs: []TaskOutput{
+				{
+					Name: "out",
+					Path: "path1",
+				},
+			},
+			Caches: []TaskCache{
+				{
+					Path: "cpath",
+				},
+			},
+			Run: &TaskRun{
+				Path: "bash",
+				Args: []string{
+					"bcd",
+				},
+				Dir:  "",
+				User: "",
+			},
+			Params: map[string]interface{}{
+				"p1": "val",
+			},
+		}
+
+		expectedTaskConfig := `var TaskConfig3721a40786706e0a = TaskConfig{
+Platform: "linux",
+ImageResource: &TaskImageResourceaf6e4556101cbde,
+RootfsUri: "aaa",
+Inputs: []TaskInput{
+{Name: "in", Path: "path", Optional: true},
+},
+Outputs: []TaskOutput{
+{Name: "out", Path: "path1"},
+},
+Caches: []TaskCache{
+{Path: "cpath"},
+},
+Run: &TaskRun{
+Path: "bash",
+Dir: "",
+User: "",
+Args: []string{"bcd"},
+},
+Params: map[string]interface {}{"p1":"val"},
+}`
+
+		stepName := taskConfig.Generate()
+		result, ok = StepNameToBlock[stepName]
+		Expect(ok).To(BeTrue())
+		GinkgoWriter.Write([]byte(result))
+		Expect(result).To(Equal(expectedTaskConfig))
 	})
 })

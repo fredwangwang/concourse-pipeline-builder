@@ -144,13 +144,13 @@ jobs:
 						Task: "task-one",
 						Config: &TaskConfig{
 							Platform: "linux",
-							ImageResource: TaskImageResource{
+							ImageResource: &TaskImageResource{
 								Type: "docker-image",
 								Source: map[string]interface{}{
 									"repository": "ubuntu",
 								},
 							},
-							Run: TaskRun{
+							Run: &TaskRun{
 								Path: "bash",
 								Args: []string{
 									`

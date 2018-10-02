@@ -41,14 +41,14 @@ var _ = Describe("StepAggregate", func() {
 			},
 		}
 
-		expected := `var StepAggregate2201624517 = StepAggregate{
+		expected := `var StepAggregatefcea162f7e2c5285 = StepAggregate{
 Aggregate: Steps{
-StepGetsomething3739314951,
-StepPutsomething1117426483,
+StepGetsomething616bd9df0a81a013,
+StepPutsomethingcc7ec3f5209f51db,
 },
 StepHook:  StepHook{
-OnSuccess: StepAggregate238783884,
-OnFailure: StepAggregate238783884,
+OnSuccess: StepAggregate6ec501561a44889f,
+OnFailure: StepAggregate6ec501561a44889f,
 },
 }`
 

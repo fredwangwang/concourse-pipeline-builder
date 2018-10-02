@@ -27,14 +27,14 @@ var _ = Describe("StepPut", func() {
 			},
 		}
 
-		expected := `var StepPutsomething3402357338 = StepPut{
+		expected := `var StepPutsomething439ab7eb3de6c2c = StepPut{
 Put: "something",
 Resource: "some-res",
 Params: map[string]interface {}{"abc":"def"},
 GetParams: map[string]interface {}{"hello":1234},
 StepHook:  StepHook{
-OnSuccess: StepPutanother1461752950,
-OnFailure: StepPutanother1461752950,
+OnSuccess: StepPutanotheraa6dbabbb5ec4b64,
+OnFailure: StepPutanotheraa6dbabbb5ec4b64,
 },
 }`
 

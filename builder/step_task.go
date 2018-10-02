@@ -2,6 +2,8 @@ package builder
 
 import (
 	"fmt"
+	"github.com/mitchellh/hashstructure"
+	"log"
 	"strings"
 )
 
@@ -42,7 +44,7 @@ func (s StepTask) Generate() string {
 		fmt.Sprintf("Task: \"%s\",", s.Task),
 	}
 	if s.Config != nil {
-		parts = append(parts, fmt.Sprintf("Config: \"%s\",", s.Config.Generate()))
+		parts = append(parts, fmt.Sprintf("Config: %s,", s.Config.Generate()))
 	}
 	if s.File != "" {
 		parts = append(parts, fmt.Sprintf("File: \"%s\",", s.File))
@@ -92,10 +94,13 @@ func (s StepTask) Generate() string {
 	parts = append(parts, "}")
 
 	// get name
-	// hash is deterministic. Given the same struct, the hash is always the same. // TODO: better desc
-	hash := hashString(strings.Join(parts, ""))
+	// do not see a particular reason why this would ever fail. If it fails, let it fail then.
+	hash, err := hashstructure.Hash(s, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	name := fmt.Sprintf("StepTask%s%d", s.Task, hash)
+	name := fmt.Sprintf("StepTask%s%x", s.Task, hash)
 	parts[0] = fmt.Sprintf("var %s = StepTask{", name)
 
 	generated := strings.Join(parts, "\n")

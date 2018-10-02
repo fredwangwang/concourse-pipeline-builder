@@ -59,7 +59,7 @@ func main() {
 		Task: "hello",
 		Config: &TaskConfig{
 			Platform: "linux",
-			ImageResource: TaskImageResource{
+			ImageResource: &TaskImageResource{
 				Type: "docker-image",
 				Source: map[string]interface{}{
 					"repository": "ubuntu",
@@ -80,7 +80,7 @@ func main() {
 					Path: "temp-res",
 				},
 			},
-			Run: TaskRun{
+			Run: &TaskRun{
 				Path: "bash",
 				Args: []string{
 					`-c`,

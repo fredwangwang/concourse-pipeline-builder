@@ -2,6 +2,8 @@ package builder
 
 import (
 	"fmt"
+	"github.com/mitchellh/hashstructure"
+	"log"
 	"strings"
 )
 
@@ -86,9 +88,13 @@ func (s StepGet) Generate() string {
 	// closing
 	parts = append(parts, "}")
 
-	hash := hashString(strings.Join(parts, ""))
+	// do not see a particular reason why this would ever fail. If it fails, let it fail then.
+	hash, err := hashstructure.Hash(s, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	name := fmt.Sprintf("StepGet%s%d", s.Get, hash)
+	name := fmt.Sprintf("StepGet%s%x", s.Get, hash)
 	parts[0] = fmt.Sprintf("var %s = StepGet{", name)
 
 	generated := strings.Join(parts, "\n")

@@ -2,6 +2,8 @@ package builder
 
 import (
 	"fmt"
+	"github.com/mitchellh/hashstructure"
+	"log"
 	"strings"
 )
 
@@ -73,9 +75,13 @@ func (s StepPut) Generate() string {
 
 	// get name
 	// hash is deterministic. Given the same struct, the hash is always the same. // TODO: better desc
-	hash := hashString(strings.Join(parts, ""))
+	// do not see a particular reason why this would ever fail. If it fails, let it fail then.
+	hash, err := hashstructure.Hash(s, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	name := fmt.Sprintf("StepPut%s%d", s.Put, hash)
+	name := fmt.Sprintf("StepPut%s%x", s.Put, hash)
 	parts[0] = fmt.Sprintf("var %s = StepPut{", name)
 
 	generated := strings.Join(parts, "\n")

@@ -43,6 +43,14 @@
   version = "v1.4.0"
 
 [[projects]]
+  digest = "1:61332bb44d05257bbf0356d8400a8b30fe0b9fdc3b72b8b55661da8f0a4f39ae"
+  name = "github.com/mitchellh/hashstructure"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a38c50148365edc8df43c1580c48fb2b3a1e9cd7"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:42e29deef12327a69123b9cb2cb45fee4af5c12c2a23c6e477338279a052703f"
   name = "github.com/onsi/ginkgo"
   packages = [
@@ -174,6 +182,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/jessevdk/go-flags",
+    "github.com/mitchellh/hashstructure",
     "github.com/onsi/ginkgo",
     "github.com/onsi/gomega",
     "github.com/onsi/gomega/gexec",

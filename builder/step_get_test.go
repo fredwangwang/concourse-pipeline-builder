@@ -29,7 +29,7 @@ var _ = Describe("StepGet", func() {
 			},
 		}
 
-		expected := `var StepGetsomething817928348 = StepGet{
+		expected := `var StepGetsomething4f9c6991390f3482 = StepGet{
 Get: "something",
 Resource: "some-res",
 Version: map[string]string{"ref":"adsfjklajdfkl"},
@@ -37,8 +37,8 @@ Passed: []string{"a", "b"},
 Params: map[string]interface {}{"abc":"def"},
 Trigger: true,
 StepHook:  StepHook{
-OnSuccess: StepGetanother2093271898,
-OnFailure: StepGetanother2093271898,
+OnSuccess: StepGetanother6fb7d977c411f07c,
+OnFailure: StepGetanother6fb7d977c411f07c,
 },
 }`
 

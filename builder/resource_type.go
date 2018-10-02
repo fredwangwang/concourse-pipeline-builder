@@ -1,7 +1,7 @@
 package builder
 
 type ResourceType struct {
-	Name       string                 `yaml:"name,omitempty" validate:"required"`  // TODO: add validation later
+	Name       string                 `yaml:"name,omitempty" validate:"required"` // TODO: add validation later
 	Type       string                 `yaml:"type,omitempty" validate:"required"`
 	Source     map[string]interface{} `yaml:"source,omitempty"`
 	Privileged bool                   `yaml:"privileged,omitempty"`

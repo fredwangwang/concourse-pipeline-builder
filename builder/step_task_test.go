@@ -31,7 +31,7 @@ var _ = Describe("StepTask", func() {
 			},
 		}
 
-		expected := `var StepTasksomething3417063671 = StepTask{
+		expected := `var StepTasksomethingf7b0884af87efc8f = StepTask{
 Task: "something",
 File: "task.yml",
 Privileged: true,
@@ -39,8 +39,8 @@ Params: map[string]interface {}{"abc":"def"},
 Image: "abc",
 InputMapping: map[string]interface {}{"in":"somehting"},
 StepHook:  StepHook{
-OnSuccess: StepPutanother1461752950,
-OnFailure: StepPutanother1461752950,
+OnSuccess: StepPutanotheraa6dbabbb5ec4b64,
+OnFailure: StepPutanotheraa6dbabbb5ec4b64,
 },
 }`
 

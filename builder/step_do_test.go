@@ -41,14 +41,14 @@ var _ = Describe("StepDo", func() {
 			},
 		}
 
-		expected := `var StepDo3206072831 = StepDo{
+		expected := `var StepDo7529fcd10a2ae5ff = StepDo{
 Do: Steps{
-StepGetsomething3739314951,
-StepPutsomething1117426483,
+StepGetsomething616bd9df0a81a013,
+StepPutsomethingcc7ec3f5209f51db,
 },
 StepHook:  StepHook{
-OnSuccess: StepDo4211289418,
-OnFailure: StepDo4211289418,
+OnSuccess: StepDoefcaa20bd1df0b03,
+OnFailure: StepDoefcaa20bd1df0b03,
 },
 }`
 

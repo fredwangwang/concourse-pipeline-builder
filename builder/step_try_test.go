@@ -36,11 +36,11 @@ var _ = Describe("StepTry", func() {
 			},
 		}
 
-		expected := `var StepTry518229490 = StepTry{
-Try: StepGettry-get3956449771,
+		expected := `var StepTryc05e731c896b6eed = StepTry{
+Try: StepGettry-get1b5dfff4bf2ce5e,
 StepHook:  StepHook{
-OnSuccess: StepDo4211289418,
-OnFailure: StepDo4211289418,
+OnSuccess: StepDoefcaa20bd1df0b03,
+OnFailure: StepDoefcaa20bd1df0b03,
 },
 }`
 
