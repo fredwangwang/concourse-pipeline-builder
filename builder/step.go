@@ -8,6 +8,7 @@ import (
 
 type Step interface {
 	StepType() string
+	Generate() string
 }
 
 type Steps []Step

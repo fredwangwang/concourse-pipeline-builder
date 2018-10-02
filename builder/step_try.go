@@ -17,3 +17,7 @@ func (s *StepTry) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	unmarshalStep(s, &_stepTry{}, unmarshal)
 	return nil
 }
+
+func (s StepTry) Generate() string {
+	return ""
+}

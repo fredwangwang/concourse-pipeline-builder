@@ -16,3 +16,7 @@ func (s StepAggregate) StepType() string {
 func (s *StepAggregate) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return unmarshalStep(s, &_stepAggregate{}, unmarshal)
 }
+
+func (s StepAggregate) Generate() string {
+	return ""
+}

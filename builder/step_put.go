@@ -1,5 +1,10 @@
 package builder
 
+import (
+	"fmt"
+	"strings"
+)
+
 type StepPut struct {
 	Put       string                 `yaml:"put,omitempty"`
 	Resource  string                 `yaml:"resource,omitempty"`
@@ -23,43 +28,60 @@ func (s *StepPut) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return unmarshalStep(s, &_stepPut{}, unmarshal)
 }
 
-//func (s *StepPut) Generate() string {
-//	tmpl := `
-//var StepPut%s = StepPut{
-//	Put:       "%s",
-//	Resource:  "%s",
-//	Params:    %#v,
-//	GetParams: %#v,
-//    StepHook:  StepHook{
-//        OnSuccess: %s,
-//        OnFailure: %s,
-//        OnAbort: %s,
-//        Ensure: %s,
-//        Tags: %#v,
-//        Timeout: "%s",
-//        Attempts: %d,
-//    }
-//}
-//`
-//
-//	generated := fmt.Sprintf(tmpl,
-//		"name", s.Put, s.Resource, s.Params, s.GetParams,
-//		"a", "b", "c", "d", s.Tags, s.Timeout, s.Attempts)
-//
-//	//h := fnv.New32a()
-//	//h.Write([]byte(generated))
-//	//index := h.Sum32()
-//	//
-//	//IndexBlock[index] = generated
-//	//
-//	//fmt.Println(generated)
-//
-//	fmt.Println(generated)
-//	s.OnSuccess = StepGet{
-//		Get:"adsf",
-//	}
-//
-//	fmt.Printf("%#v\n", s)
-//
-//	return ""
-//}
+func (s StepPut) Generate() string {
+	var parts = []string{
+		"StepPut{", // placeholder
+		fmt.Sprintf("Put: \"%s\",", s.Put),
+	}
+
+	if s.Resource != "" {
+		parts = append(parts, fmt.Sprintf("Resource: \"%s\",", s.Resource))
+	}
+	if s.Params != nil {
+		parts = append(parts, fmt.Sprintf("Params: %#v,", s.Params))
+	}
+	if s.GetParams != nil {
+		parts = append(parts, fmt.Sprintf("GetParams: %#v,", s.GetParams))
+	}
+
+	// add stephook
+	parts = append(parts, "StepHook:  StepHook{")
+	if s.OnSuccess != nil {
+		parts = append(parts, fmt.Sprintf("OnSuccess: \"%s\",", s.OnSuccess.Generate()))
+	}
+	if s.OnFailure != nil {
+		parts = append(parts, fmt.Sprintf("OnFailure: \"%s\",", s.OnFailure.Generate()))
+	}
+	if s.OnAbort != nil {
+		parts = append(parts, fmt.Sprintf("OnAbort: \"%s\",", s.OnAbort.Generate()))
+	}
+	if s.Ensure != nil {
+		parts = append(parts, fmt.Sprintf("Ensure: \"%s\",", s.Ensure.Generate()))
+	}
+	if s.Tags != nil {
+		parts = append(parts, fmt.Sprintf("Tags: %#v,", s.Tags))
+	}
+	if s.Timeout != "" {
+		parts = append(parts, fmt.Sprintf("Timeout: \"%s\",", s.Timeout))
+	}
+	if s.Attempts != 0 {
+		parts = append(parts, fmt.Sprintf("Attempts: %d,", s.Attempts))
+	}
+	parts = append(parts, "},")
+
+	// closing
+	parts = append(parts, "}")
+
+	// get name
+	// hash is deterministic. Given the same struct, the hash is always the same. // TODO: better desc
+	hash := hashString(strings.Join(parts, ""))
+
+	name := fmt.Sprintf("StepPut%s%d", s.Put, hash)
+	parts[0] = fmt.Sprintf("var %s = StepPut{", name)
+
+	generated := strings.Join(parts, "\n")
+
+	StepNameToBlock[name] = generated
+
+	return name
+}

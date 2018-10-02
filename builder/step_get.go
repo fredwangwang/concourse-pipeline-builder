@@ -26,3 +26,7 @@ func (s StepGet) StepType() string {
 func (s *StepGet) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return unmarshalStep(s, &_stepGet{}, unmarshal)
 }
+
+func (s StepGet) Generate() string {
+	return ""
+}

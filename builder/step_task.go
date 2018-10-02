@@ -30,3 +30,7 @@ func (s StepTask) StepType() string {
 func (s *StepTask) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return unmarshalStep(s, &_stepTask{}, unmarshal)
 }
+
+func (s StepTask) Generate() string {
+	return ""
+}
