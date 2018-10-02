@@ -42,12 +42,4 @@ resource_types:
 		Expect(err).NotTo(HaveOccurred())
 		Expect(string(yamlBytes)).To(MatchYAML(yamlStr))
 	})
-
-	It("validates", func() {
-		rt := ResourceType{}
-		err := rt.Validate()
-		Expect(err).To(HaveOccurred())
-		Expect(err.Error()).To(ContainSubstring("'Name' failed on the 'required' tag"))
-		Expect(err.Error()).To(ContainSubstring("'Type' failed on the 'required' tag"))
-	})
 })
