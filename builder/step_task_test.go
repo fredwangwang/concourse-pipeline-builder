@@ -6,15 +6,17 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = XDescribe("StepTask", func() {
+var _ = Describe("StepTask", func() {
 	It("generates proper code section", func() {
 		step1 := StepTask{
 			Task:       "something",
-			//Config:     nil,
+			Config:     nil,
+			File:       "task.yml",
+			Privileged: true,
 			Params: map[string]interface{}{
 				"abc": "def",
 			},
-			Image:         "abc",
+			Image: "abc",
 			InputMapping: map[string]interface{}{
 				"in": "somehting",
 			},
@@ -29,11 +31,13 @@ var _ = XDescribe("StepTask", func() {
 			},
 		}
 
-		expected := `var StepPutsomething3402357338 = StepPut{
-Put: "something",
-Resource: "some-res",
+		expected := `var StepTasksomething3417063671 = StepTask{
+Task: "something",
+File: "task.yml",
+Privileged: true,
 Params: map[string]interface {}{"abc":"def"},
-GetParams: map[string]interface {}{"hello":1234},
+Image: "abc",
+InputMapping: map[string]interface {}{"in":"somehting"},
 StepHook:  StepHook{
 OnSuccess: StepPutanother1461752950,
 OnFailure: StepPutanother1461752950,

@@ -33,7 +33,6 @@ func (s StepPut) Generate() string {
 		"StepPut{", // placeholder
 		fmt.Sprintf("Put: \"%s\",", s.Put),
 	}
-
 	if s.Resource != "" {
 		parts = append(parts, fmt.Sprintf("Resource: \"%s\",", s.Resource))
 	}
@@ -47,16 +46,16 @@ func (s StepPut) Generate() string {
 	// add stephook
 	parts = append(parts, "StepHook:  StepHook{")
 	if s.OnSuccess != nil {
-		parts = append(parts, fmt.Sprintf("OnSuccess: \"%s\",", s.OnSuccess.Generate()))
+		parts = append(parts, fmt.Sprintf("OnSuccess: %s,", s.OnSuccess.Generate()))
 	}
 	if s.OnFailure != nil {
-		parts = append(parts, fmt.Sprintf("OnFailure: \"%s\",", s.OnFailure.Generate()))
+		parts = append(parts, fmt.Sprintf("OnFailure: %s,", s.OnFailure.Generate()))
 	}
 	if s.OnAbort != nil {
-		parts = append(parts, fmt.Sprintf("OnAbort: \"%s\",", s.OnAbort.Generate()))
+		parts = append(parts, fmt.Sprintf("OnAbort: %s,", s.OnAbort.Generate()))
 	}
 	if s.Ensure != nil {
-		parts = append(parts, fmt.Sprintf("Ensure: \"%s\",", s.Ensure.Generate()))
+		parts = append(parts, fmt.Sprintf("Ensure: %s,", s.Ensure.Generate()))
 	}
 	if s.Tags != nil {
 		parts = append(parts, fmt.Sprintf("Tags: %#v,", s.Tags))

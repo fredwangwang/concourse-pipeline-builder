@@ -7,7 +7,7 @@ import (
 
 type StepTask struct {
 	Task          string                 `yaml:"task,omitempty"`
-	Config        *TaskConfig             `yaml:"config,omitempty"` // TODO: validate config and file can have only one set
+	Config        *TaskConfig            `yaml:"config,omitempty"` // TODO: validate config and file can have only one set
 	File          string                 `yaml:"file,omitempty"`
 	Privileged    bool                   `yaml:"privileged,omitempty"`
 	Params        map[string]interface{} `yaml:"params,omitempty"`
@@ -19,7 +19,7 @@ type StepTask struct {
 
 type _stepTask struct {
 	Task          string                 `yaml:"task,omitempty"`
-	Config        *TaskConfig             `yaml:"config,omitempty"` // TODO: validate config and file can have only one set
+	Config        *TaskConfig            `yaml:"config,omitempty"` // TODO: validate config and file can have only one set
 	File          string                 `yaml:"file,omitempty"`
 	Privileged    bool                   `yaml:"privileged,omitempty"`
 	Params        map[string]interface{} `yaml:"params,omitempty"`
@@ -37,21 +37,13 @@ func (s *StepTask) UnmarshalYAML(unmarshal func(interface{}) error) error {
 }
 
 func (s StepTask) Generate() string {
-	fmt.Printf("%#v\n", s)
-	//a := StepTask{
-	//	//Config:        TaskConfig{ // TODO: generate config
-	//	InputMapping:  nil,
-	//	OutputMapping: nil,
-	//	StepHook:      StepHook{},
-	//}
-
 	var parts = []string{
 		"StepTask:{", // placeholder
 		fmt.Sprintf("Task: \"%s\",", s.Task),
 	}
-	//if s.Config == (TaskConfig{}) {
-	//	parts = append(parts, fmt.Sprintf("Config: \"%s\"", s.Config.Generate()))
-	//}
+	if s.Config != nil {
+		parts = append(parts, fmt.Sprintf("Config: \"%s\",", s.Config.Generate()))
+	}
 	if s.File != "" {
 		parts = append(parts, fmt.Sprintf("File: \"%s\",", s.File))
 	}

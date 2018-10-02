@@ -6,35 +6,39 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("StepPut", func() {
+var _ = Describe("StepGet", func() {
 	It("generates proper code section", func() {
-		step1 := StepPut{
-			Put:      "something",
+		step1 := StepGet{
+			Get:      "something",
 			Resource: "some-res",
+			Version: map[string]string{
+				"ref": "adsfjklajdfkl",
+			},
+			Passed:  []string{"a", "b"},
+			Trigger: true,
 			Params: map[string]interface{}{
 				"abc": "def",
 			},
-			GetParams: map[string]interface{}{
-				"hello": 1234,
-			},
 			StepHook: StepHook{
-				OnSuccess: StepPut{
-					Put: "another",
+				OnSuccess: StepGet{
+					Get: "another",
 				},
-				OnFailure: StepPut{
-					Put: "another",
+				OnFailure: StepGet{
+					Get: "another",
 				},
 			},
 		}
 
-		expected := `var StepPutsomething3402357338 = StepPut{
-Put: "something",
+		expected := `var StepGetsomething817928348 = StepGet{
+Get: "something",
 Resource: "some-res",
+Version: map[string]string{"ref":"adsfjklajdfkl"},
+Passed: []string{"a", "b"},
 Params: map[string]interface {}{"abc":"def"},
-GetParams: map[string]interface {}{"hello":1234},
+Trigger: true,
 StepHook:  StepHook{
-OnSuccess: StepPutanother1461752950,
-OnFailure: StepPutanother1461752950,
+OnSuccess: StepGetanother2093271898,
+OnFailure: StepGetanother2093271898,
 },
 }`
 

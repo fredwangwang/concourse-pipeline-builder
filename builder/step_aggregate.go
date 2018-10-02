@@ -5,31 +5,31 @@ import (
 	"strings"
 )
 
-type StepDo struct {
-	Do       Steps `yaml:"do,omitempty"`
-	StepHook `yaml:",inline,omitempty"`
+type StepAggregate struct {
+	Aggregate Steps `yaml:"aggregate,omitempty"`
+	StepHook  `yaml:",inline,omitempty"`
 }
 
-type _stepDo struct {
-	Do Steps `yaml:"do,omitempty"`
+type _stepAggregate struct {
+	Aggregate Steps `yaml:"aggregate,omitempty"`
 }
 
-func (s StepDo) StepType() string {
-	return "do"
+func (s StepAggregate) StepType() string {
+	return "aggregate"
 }
 
-func (s *StepDo) UnmarshalYAML(unmarshal func(interface{}) error) error {
-	return unmarshalStep(s, &_stepDo{}, unmarshal)
+func (s *StepAggregate) UnmarshalYAML(unmarshal func(interface{}) error) error {
+	return unmarshalStep(s, &_stepAggregate{}, unmarshal)
 }
 
-func (s StepDo) Generate() string {
+func (s StepAggregate) Generate() string {
 	var parts = []string{
 		"StepGet{", // placeholder
 	}
-	if s.Do != nil {
-		parts = append(parts, "Do: Steps{")
+	if s.Aggregate != nil {
+		parts = append(parts, "Aggregate: Steps{")
 
-		for _, step := range s.Do {
+		for _, step := range s.Aggregate {
 			stepName := step.Generate()
 			parts = append(parts, fmt.Sprintf("%s,", stepName))
 		}
@@ -66,8 +66,8 @@ func (s StepDo) Generate() string {
 
 	hash := hashString(strings.Join(parts, ""))
 
-	name := fmt.Sprintf("StepDo%d", hash)
-	parts[0] = fmt.Sprintf("var %s = StepDo{", name)
+	name := fmt.Sprintf("StepAggregate%d", hash)
+	parts[0] = fmt.Sprintf("var %s = StepAggregate{", name)
 
 	generated := strings.Join(parts, "\n")
 
