@@ -57,7 +57,7 @@ func main() {
 
 	stepTask := StepTask{
 		Task: "hello",
-		Config: TaskConfig{
+		Config: &TaskConfig{
 			Platform: "linux",
 			ImageResource: TaskImageResource{
 				Type: "docker-image",

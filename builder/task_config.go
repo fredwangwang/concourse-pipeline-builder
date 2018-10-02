@@ -41,3 +41,7 @@ type TaskRun struct {
 	Dir  string   `yaml:"dir,omitempty"`
 	User string   `yaml:"user,omitempty"`
 }
+
+func (t TaskConfig) Generate() string {
+	return ""
+}

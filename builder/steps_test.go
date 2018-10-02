@@ -142,7 +142,7 @@ jobs:
 					},
 					StepTask{
 						Task: "task-one",
-						Config: TaskConfig{
+						Config: &TaskConfig{
 							Platform: "linux",
 							ImageResource: TaskImageResource{
 								Type: "docker-image",

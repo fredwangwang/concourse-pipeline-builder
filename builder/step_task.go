@@ -1,8 +1,13 @@
 package builder
 
+import (
+	"fmt"
+	"strings"
+)
+
 type StepTask struct {
 	Task          string                 `yaml:"task,omitempty"`
-	Config        TaskConfig             `yaml:"config,omitempty"` // TODO: validate config and file can have only one set
+	Config        *TaskConfig             `yaml:"config,omitempty"` // TODO: validate config and file can have only one set
 	File          string                 `yaml:"file,omitempty"`
 	Privileged    bool                   `yaml:"privileged,omitempty"`
 	Params        map[string]interface{} `yaml:"params,omitempty"`
@@ -14,7 +19,7 @@ type StepTask struct {
 
 type _stepTask struct {
 	Task          string                 `yaml:"task,omitempty"`
-	Config        TaskConfig             `yaml:"config,omitempty"` // TODO: validate config and file can have only one set
+	Config        *TaskConfig             `yaml:"config,omitempty"` // TODO: validate config and file can have only one set
 	File          string                 `yaml:"file,omitempty"`
 	Privileged    bool                   `yaml:"privileged,omitempty"`
 	Params        map[string]interface{} `yaml:"params,omitempty"`
@@ -32,5 +37,78 @@ func (s *StepTask) UnmarshalYAML(unmarshal func(interface{}) error) error {
 }
 
 func (s StepTask) Generate() string {
-	return ""
+	fmt.Printf("%#v\n", s)
+	//a := StepTask{
+	//	//Config:        TaskConfig{ // TODO: generate config
+	//	InputMapping:  nil,
+	//	OutputMapping: nil,
+	//	StepHook:      StepHook{},
+	//}
+
+	var parts = []string{
+		"StepTask:{", // placeholder
+		fmt.Sprintf("Task: \"%s\",", s.Task),
+	}
+	//if s.Config == (TaskConfig{}) {
+	//	parts = append(parts, fmt.Sprintf("Config: \"%s\"", s.Config.Generate()))
+	//}
+	if s.File != "" {
+		parts = append(parts, fmt.Sprintf("File: \"%s\",", s.File))
+	}
+	if s.Privileged {
+		parts = append(parts, fmt.Sprintf("Privileged: true,"))
+	}
+	if s.Params != nil {
+		parts = append(parts, fmt.Sprintf("Params: %#v,", s.Params))
+	}
+	if s.Image != "" {
+		parts = append(parts, fmt.Sprintf("Image: \"%s\",", s.Image))
+	}
+	if s.InputMapping != nil {
+		parts = append(parts, fmt.Sprintf("InputMapping: %#v,", s.InputMapping))
+	}
+	if s.OutputMapping != nil {
+		parts = append(parts, fmt.Sprintf("OutputMapping: %#v,", s.OutputMapping))
+	}
+
+	// add stephook
+	parts = append(parts, "StepHook:  StepHook{")
+	if s.OnSuccess != nil {
+		parts = append(parts, fmt.Sprintf("OnSuccess: %s,", s.OnSuccess.Generate()))
+	}
+	if s.OnFailure != nil {
+		parts = append(parts, fmt.Sprintf("OnFailure: %s,", s.OnFailure.Generate()))
+	}
+	if s.OnAbort != nil {
+		parts = append(parts, fmt.Sprintf("OnAbort: %s,", s.OnAbort.Generate()))
+	}
+	if s.Ensure != nil {
+		parts = append(parts, fmt.Sprintf("Ensure: %s,", s.Ensure.Generate()))
+	}
+	if s.Tags != nil {
+		parts = append(parts, fmt.Sprintf("Tags: %#v,", s.Tags))
+	}
+	if s.Timeout != "" {
+		parts = append(parts, fmt.Sprintf("Timeout: \"%s\",", s.Timeout))
+	}
+	if s.Attempts != 0 {
+		parts = append(parts, fmt.Sprintf("Attempts: %d,", s.Attempts))
+	}
+	parts = append(parts, "},")
+
+	// closing
+	parts = append(parts, "}")
+
+	// get name
+	// hash is deterministic. Given the same struct, the hash is always the same. // TODO: better desc
+	hash := hashString(strings.Join(parts, ""))
+
+	name := fmt.Sprintf("StepTask%s%d", s.Task, hash)
+	parts[0] = fmt.Sprintf("var %s = StepTask{", name)
+
+	generated := strings.Join(parts, "\n")
+
+	StepNameToBlock[name] = generated
+
+	return name
 }
