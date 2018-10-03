@@ -1,7 +1,9 @@
 package builder
 
 import (
+	"fmt"
 	"gopkg.in/go-playground/validator.v9"
+	"strings"
 )
 
 type Group struct {
@@ -59,4 +61,45 @@ func (g Group) MarshalYAML() (interface{}, error) {
 	}
 
 	return internal, nil
+}
+
+func (g Group) Generate() string {
+	var parts = []string{
+		"Group{", // placeholder
+		fmt.Sprintf("Name: \"%s\",", g.Name),
+	}
+
+	// the generation of groups depends on the parsed jobs and resources. As it makes
+	// no sense that a job is defined only in group section not in jobs section as well.
+	// in order to correctly linking the jobs and resources, this method must be called
+	// after the generation of jobs and resources. Otherwise exception will be thrown.
+	// eh actually not, I realized as I typed out these things... hash solves the problem,
+	// thats why I used hash in the first place... It will have collision for the two same
+	// code block, resulting only one instance in the global map.
+	if g.Jobs != nil {
+		parts = append(parts, "Jobs: []Job{")
+		for _, job := range g.Jobs {
+			parts = append(parts, fmt.Sprintf("%s,", job.Generate()))
+		}
+		parts = append(parts, "},")
+	}
+	if g.Resources != nil {
+		parts = append(parts, "Resources: []Resource{")
+		for _, resource := range g.Resources {
+			parts = append(parts, fmt.Sprintf("%s,", resource.Generate()))
+		}
+		parts = append(parts, "},")
+	}
+
+	// closing
+	parts = append(parts, "}")
+
+	name := fmt.Sprintf("Group%s", g.Name)
+	parts[0] = fmt.Sprintf("var %s = Group{", name)
+
+	generated := strings.Join(parts, "\n")
+
+	NameToBlock[name] = generated
+
+	return name
 }

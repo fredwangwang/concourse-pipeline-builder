@@ -45,8 +45,8 @@ func (r Resource) Generate() string {
 	// closing
 	parts = append(parts, "}")
 
-	name := fmt.Sprintf("ResourceType%s", r.Name)
-	parts[0] = fmt.Sprintf("var %s = ResourceType{", name)
+	name := fmt.Sprintf("Resource%s", r.Name)
+	parts[0] = fmt.Sprintf("var %s = Resource{", name)
 
 	generated := strings.Join(parts, "\n")
 

@@ -54,13 +54,13 @@ resources:
 			Source: map[string]interface{}{
 				"a": "b",
 			},
-			Version: "latest",
+			Version:      "latest",
 			CheckEvery:   "4m",
 			Tags:         []string{"a", "z"},
 			WebhookToken: "localhost",
 		}
 
-		expected := `var ResourceTyperes1 = ResourceType{
+		expected := `var Resourceres1 = Resource{
 Name: "res1",
 Type: "typ",
 Source: map[string]interface {}{"a":"b"},

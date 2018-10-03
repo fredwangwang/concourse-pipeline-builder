@@ -58,4 +58,28 @@ groups:
 		Expect(err).To(HaveOccurred())
 		Expect(err.Error()).To(ContainSubstring("'Name' failed on the 'required' tag"))
 	})
+
+	It("generates proper code section", func() {
+		step1 := Group{
+			Name:      "g1",
+			Jobs:      []Job{{Name: "j1"}},
+			Resources: []Resource{{Name: "r1"}},
+		}
+
+		expected := `var Groupg1 = Group{
+Name: "g1",
+Jobs: []Job{
+Jobj1,
+},
+Resources: []Resource{
+Resourcer1,
+},
+}`
+
+		stepName := step1.Generate()
+		result, ok := NameToBlock[stepName]
+		Expect(ok).To(BeTrue())
+		GinkgoWriter.Write([]byte(result))
+		Expect(result).To(Equal(expected))
+	})
 })
