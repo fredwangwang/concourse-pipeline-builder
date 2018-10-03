@@ -11,3 +11,7 @@ type ResourceType struct {
 }
 
 type ResourceTypes []ResourceType
+
+func (r ResourceType) Generate() string {
+	return ""
+}

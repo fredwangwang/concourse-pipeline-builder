@@ -128,7 +128,7 @@ echo "$HELLO_STR"
 		}
 
 		imageName := imageResource.Generate()
-		result, ok := StepNameToBlock[imageName]
+		result, ok := NameToBlock[imageName]
 		Expect(ok).To(BeTrue())
 		GinkgoWriter.Write([]byte(result))
 		Expect(result).To(ContainSubstring("var TaskImageResourceaf6e4556101cbde"))
@@ -191,7 +191,7 @@ Params: map[string]interface {}{"p1":"val"},
 }`
 
 		stepName := taskConfig.Generate()
-		result, ok = StepNameToBlock[stepName]
+		result, ok = NameToBlock[stepName]
 		Expect(ok).To(BeTrue())
 		GinkgoWriter.Write([]byte(result))
 		Expect(result).To(Equal(expectedTaskConfig))

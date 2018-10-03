@@ -39,7 +39,7 @@ OnFailure: StepPutanotheraa6dbabbb5ec4b64,
 }`
 
 		stepName := step1.Generate()
-		result, ok := StepNameToBlock[stepName]
+		result, ok := NameToBlock[stepName]
 		Expect(ok).To(BeTrue())
 		GinkgoWriter.Write([]byte(result))
 		Expect(result).To(Equal(expected))
