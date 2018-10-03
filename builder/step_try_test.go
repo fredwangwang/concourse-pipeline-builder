@@ -37,7 +37,7 @@ var _ = Describe("StepTry", func() {
 		}
 
 		expected := `var StepTryc05e731c896b6eed = StepTry{
-Try: StepGettry-get1b5dfff4bf2ce5e,
+Try: StepGettryget1b5dfff4bf2ce5e,
 StepHook:  StepHook{
 OnSuccess: StepDoefcaa20bd1df0b03,
 OnFailure: StepDoefcaa20bd1df0b03,

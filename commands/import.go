@@ -1,16 +1,13 @@
 package commands
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/fredwangwang/concourse-pipeline-builder/builder"
 	"gopkg.in/go-playground/validator.v9"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"path"
-	"strings"
 )
 
 type Import struct {
@@ -19,20 +16,20 @@ type Import struct {
 	Output string `short:"o" long:"output" description:"path to the folder to be created" required:"true"`
 }
 
-var tmpl = `
+const header = `
 package main
 
 import (
 	"fmt"
-	"github.com/fredwangwang/concourse-pipeline-builder/builder"
+	. "github.com/fredwangwang/concourse-pipeline-builder/builder"
 	"gopkg.in/yaml.v2"
 	"log"
 )
+`
 
-var Pipeline = %#v
-
+const mainFunc = `
 func main() {
-	content, err := yaml.Marshal(Pipeline)
+	content, err := yaml.Marshal(%s)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -40,6 +37,14 @@ func main() {
 	fmt.Println(string(content))
 }
 `
+
+//var tmpl = `
+//
+//
+//var Pipeline = %#v
+//
+//
+//`
 
 func (i *Import) Execute(args []string) error {
 	if err := validator.New().Struct(i); err != nil {
@@ -64,12 +69,12 @@ func (i *Import) Execute(args []string) error {
 		return err
 	}
 
-	pipe.Name = i.Name
-
 	err = yaml.Unmarshal(pipeBytes, &pipe)
 	if err != nil {
 		return err
 	}
+
+	pipe.Name = i.Name
 
 	f, err := os.Create(path.Join(i.Output, "main.go"))
 	if err != nil {
@@ -77,18 +82,32 @@ func (i *Import) Execute(args []string) error {
 	}
 	defer f.Close()
 
-	_, err = fmt.Fprintf(f, tmpl, pipe)
+	pipeVarName := pipe.Generate()
+
+	_, err = fmt.Fprint(f, header)
+	if err != nil {
+		return err
+	}
+
+	for _, block := range builder.NameToBlock {
+		_, err = f.WriteString(block + "\n\n")
+		if err != nil {
+			return err
+		}
+	}
+
+	_, err = fmt.Fprintf(f, fmt.Sprintf(mainFunc, pipeVarName))
 
 	return err
 }
 
-func getGoPath() (string, error) {
-	var stdout, stderr bytes.Buffer
-	cmd := exec.Command("go", "env", "GOPATH")
-	cmd.Stdout = &stdout
-	cmd.Stderr = &stderr
-	if err := cmd.Run(); err != nil {
-		return "", fmt.Errorf("%s %s", stderr.String(), err)
-	}
-	return strings.TrimSpace(stdout.String()), nil
-}
+//func getGoPath() (string, error) {
+//	var stdout, stderr bytes.Buffer
+//	cmd := exec.Command("go", "env", "GOPATH")
+//	cmd.Stdout = &stdout
+//	cmd.Stderr = &stderr
+//	if err := cmd.Run(); err != nil {
+//		return "", fmt.Errorf("%s %s", stderr.String(), err)
+//	}
+//	return strings.TrimSpace(stdout.String()), nil
+//}
