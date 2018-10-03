@@ -85,4 +85,50 @@ jobs:
 		Expect(err).NotTo(HaveOccurred())
 		Expect(string(yamlBytes)).To(MatchYAML(yamlStr))
 	})
+
+	It("generates proper code section", func() {
+		step1 := Job{
+			Name: "jb1",
+			Plan: Steps{
+				StepGet{Get: "some"},
+				StepPut{Put: "else"},
+			},
+			Serial:               true,
+			SerialGroups:         []string{"abc"},
+			BuildLogsToRetain:    123,
+			MaxInFlight:          321,
+			Public:               true,
+			DisableManualTrigger: true,
+			Interruptible:        true,
+			OnSuccess:            StepGet{Get: "OnSuccess"},
+			OnFailure:            StepGet{Get: "OnFailure"},
+			OnAbort:              StepGet{Get: "OnAbort"},
+			Ensure:               StepGet{Get: "Ensure"},
+		}
+
+		expected := `var Jobjb1 = Job{
+Name: "jb1",
+Plan: Steps{
+StepGetsome8d05d7738e82dae,
+StepPutelsea6bc5d26f886948,
+},
+Serial: true,
+SerialGroups: []string{"abc"},
+BuildLogsToRetain: 123,
+MaxInFlight: 321,
+Public: true,
+DisableManualTrigger: true,
+Interruptible: true,
+OnSuccess: StepGetOnSuccessd4ce2d2696ef7d12,
+OnFailure: StepGetOnFailure41ffd933a5738f0d,
+OnAbort: StepGetOnAbort4e9644bd74da6ad2,
+Ensure: StepGetEnsure693c228a58fc8a26,
+}`
+
+		stepName := step1.Generate()
+		result, ok := NameToBlock[stepName]
+		Expect(ok).To(BeTrue())
+		GinkgoWriter.Write([]byte(result))
+		Expect(result).To(Equal(expected))
+	})
 })
