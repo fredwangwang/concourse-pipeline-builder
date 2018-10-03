@@ -192,4 +192,36 @@ groups:
 		Expect(err).NotTo(HaveOccurred())
 		Expect(string(yamlBytes)).To(MatchYAML(yamlStr))
 	})
+
+	It("generates proper code section", func() {
+		step1 := Pipeline{
+			Name:          "p1",
+			ResourceTypes: []ResourceType{{Name: "rt1", Type: "docker"}},
+			Resources:     []Resource{{Name: "r1", Type: "rt1"}},
+			Jobs:          []Job{{Name: "j1"}},
+			Groups:        []Group{{Name: "g1", Jobs: []Job{{Name: "j1"}}}},
+		}
+
+		expected := `var Pipelinep1 = Pipeline{
+Name: "p1",
+ResourceTypes: []ResourceType{
+ResourceTypert1,
+},
+Resources: []Resource{
+Resourcer1,
+},
+Jobs: []Job{
+Jobj1,
+},
+Groups: []Group{
+Groupg1,
+},
+}`
+
+		stepName := step1.Generate()
+		result, ok := NameToBlock[stepName]
+		Expect(ok).To(BeTrue())
+		GinkgoWriter.Write([]byte(result))
+		Expect(result).To(Equal(expected))
+	})
 })

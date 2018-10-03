@@ -1,6 +1,9 @@
 package builder
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 type Pipeline struct {
 	Name          string        `yaml:"name,omitempty"`
@@ -62,4 +65,51 @@ func (p *Pipeline) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	p.Groups = internal.Groups
 
 	return nil
+}
+
+func (g Pipeline) Generate() string {
+	var parts = []string{
+		"Pipeline{", // placeholder
+		fmt.Sprintf("Name: \"%s\",", g.Name),
+	}
+	if g.ResourceTypes != nil {
+		parts = append(parts, "ResourceTypes: []ResourceType{")
+		for _, resType := range g.ResourceTypes {
+			parts = append(parts, fmt.Sprintf("%s,", resType.Generate()))
+		}
+		parts = append(parts, "},")
+	}
+	if g.Resources != nil {
+		parts = append(parts, "Resources: []Resource{")
+		for _, resource := range g.Resources {
+			parts = append(parts, fmt.Sprintf("%s,", resource.Generate()))
+		}
+		parts = append(parts, "},")
+	}
+	if g.Jobs != nil {
+		parts = append(parts, "Jobs: []Job{")
+		for _, job := range g.Jobs {
+			parts = append(parts, fmt.Sprintf("%s,", job.Generate()))
+		}
+		parts = append(parts, "},")
+	}
+	if g.Groups != nil {
+		parts = append(parts, "Groups: []Group{")
+		for _, g := range g.Groups {
+			parts = append(parts, fmt.Sprintf("%s,", g.Generate()))
+		}
+		parts = append(parts, "},")
+	}
+
+	// closing
+	parts = append(parts, "}")
+
+	name := fmt.Sprintf("Pipeline%s", g.Name)
+	parts[0] = fmt.Sprintf("var %s = Pipeline{", name)
+
+	generated := strings.Join(parts, "\n")
+
+	NameToBlock[name] = generated
+
+	return name
 }
