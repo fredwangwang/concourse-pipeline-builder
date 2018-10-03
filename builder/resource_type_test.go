@@ -42,4 +42,36 @@ resource_types:
 		Expect(err).NotTo(HaveOccurred())
 		Expect(string(yamlBytes)).To(MatchYAML(yamlStr))
 	})
+
+	It("generates proper code section", func() {
+		step1 := ResourceType{
+			Name: "res1",
+			Type: "some",
+			Source: map[string]interface{}{
+				"a": "b",
+			},
+			Privileged: true,
+			Params: map[string]interface{}{
+				"b": "c",
+			},
+			CheckEvery: "4m",
+			Tags:       []string{"a", "z"},
+		}
+
+		expected := `var ResourceTyperes1 = ResourceType{
+Name: "res1",
+Type: "some",
+Source: map[string]interface {}{"a":"b"},
+Privileged: true,
+Params: map[string]interface {}{"b":"c"},
+CheckEvery: "4m",
+Tags: []string{"a", "z"},
+}`
+
+		stepName := step1.Generate()
+		result, ok := NameToBlock[stepName]
+		Expect(ok).To(BeTrue())
+		GinkgoWriter.Write([]byte(result))
+		Expect(result).To(Equal(expected))
+	})
 })
