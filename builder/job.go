@@ -86,7 +86,7 @@ func (j Job) Generate() string {
 	// closing
 	parts = append(parts, "}")
 
-	name := fmt.Sprintf("Job%s", j.Name)
+	name := fmt.Sprintf("Job%s", sanitizeVarName(j.Name))
 	parts[0] = fmt.Sprintf("var %s = Job{", name)
 
 	generated := strings.Join(parts, "\n")

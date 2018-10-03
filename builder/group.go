@@ -94,7 +94,7 @@ func (g Group) Generate() string {
 	// closing
 	parts = append(parts, "}")
 
-	name := fmt.Sprintf("Group%s", g.Name)
+	name := fmt.Sprintf("Group%s", sanitizeVarName(g.Name))
 	parts[0] = fmt.Sprintf("var %s = Group{", name)
 
 	generated := strings.Join(parts, "\n")

@@ -2,6 +2,7 @@ package builder
 
 import (
 	"gopkg.in/yaml.v2"
+	"regexp"
 )
 
 func yamlTransform(src interface{}, dst interface{}) error {
@@ -11,4 +12,10 @@ func yamlTransform(src interface{}, dst interface{}) error {
 	}
 
 	return yaml.Unmarshal(content, dst)
+}
+
+var reg = regexp.MustCompile("[^a-zA-Z0-9]+")
+
+func sanitizeVarName(s string) string {
+	return reg.ReplaceAllString(s, "")
 }

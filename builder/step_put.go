@@ -81,7 +81,7 @@ func (s StepPut) Generate() string {
 		log.Fatal(err)
 	}
 
-	name := fmt.Sprintf("StepPut%s%x", s.Put, hash)
+	name := fmt.Sprintf("StepPut%s%x", sanitizeVarName(s.Put), hash)
 	parts[0] = fmt.Sprintf("var %s = StepPut{", name)
 
 	generated := strings.Join(parts, "\n")

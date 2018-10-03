@@ -67,35 +67,35 @@ func (p *Pipeline) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	return nil
 }
 
-func (g Pipeline) Generate() string {
+func (p Pipeline) Generate() string {
 	var parts = []string{
 		"Pipeline{", // placeholder
-		fmt.Sprintf("Name: \"%s\",", g.Name),
+		fmt.Sprintf("Name: \"%s\",", p.Name),
 	}
-	if g.ResourceTypes != nil {
+	if p.ResourceTypes != nil {
 		parts = append(parts, "ResourceTypes: []ResourceType{")
-		for _, resType := range g.ResourceTypes {
+		for _, resType := range p.ResourceTypes {
 			parts = append(parts, fmt.Sprintf("%s,", resType.Generate()))
 		}
 		parts = append(parts, "},")
 	}
-	if g.Resources != nil {
+	if p.Resources != nil {
 		parts = append(parts, "Resources: []Resource{")
-		for _, resource := range g.Resources {
+		for _, resource := range p.Resources {
 			parts = append(parts, fmt.Sprintf("%s,", resource.Generate()))
 		}
 		parts = append(parts, "},")
 	}
-	if g.Jobs != nil {
+	if p.Jobs != nil {
 		parts = append(parts, "Jobs: []Job{")
-		for _, job := range g.Jobs {
+		for _, job := range p.Jobs {
 			parts = append(parts, fmt.Sprintf("%s,", job.Generate()))
 		}
 		parts = append(parts, "},")
 	}
-	if g.Groups != nil {
+	if p.Groups != nil {
 		parts = append(parts, "Groups: []Group{")
-		for _, g := range g.Groups {
+		for _, g := range p.Groups {
 			parts = append(parts, fmt.Sprintf("%s,", g.Generate()))
 		}
 		parts = append(parts, "},")
@@ -104,7 +104,7 @@ func (g Pipeline) Generate() string {
 	// closing
 	parts = append(parts, "}")
 
-	name := fmt.Sprintf("Pipeline%s", g.Name)
+	name := fmt.Sprintf("Pipeline%s", sanitizeVarName(p.Name))
 	parts[0] = fmt.Sprintf("var %s = Pipeline{", name)
 
 	generated := strings.Join(parts, "\n")

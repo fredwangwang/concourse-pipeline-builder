@@ -44,7 +44,7 @@ func (s StepTask) Generate() string {
 		fmt.Sprintf("Task: \"%s\",", s.Task),
 	}
 	if s.Config != nil {
-		parts = append(parts, fmt.Sprintf("Config: %s,", s.Config.Generate()))
+		parts = append(parts, fmt.Sprintf("Config: &%s,", s.Config.Generate()))
 	}
 	if s.File != "" {
 		parts = append(parts, fmt.Sprintf("File: \"%s\",", s.File))
@@ -100,7 +100,7 @@ func (s StepTask) Generate() string {
 		log.Fatal(err)
 	}
 
-	name := fmt.Sprintf("StepTask%s%x", s.Task, hash)
+	name := fmt.Sprintf("StepTask%s%x", sanitizeVarName(s.Task), hash)
 	parts[0] = fmt.Sprintf("var %s = StepTask{", name)
 
 	generated := strings.Join(parts, "\n")

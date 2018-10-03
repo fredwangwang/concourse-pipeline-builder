@@ -195,7 +195,7 @@ groups:
 
 	It("generates proper code section", func() {
 		step1 := Pipeline{
-			Name:          "p1",
+			Name:          "p-1",
 			ResourceTypes: []ResourceType{{Name: "rt1", Type: "docker"}},
 			Resources:     []Resource{{Name: "r1", Type: "rt1"}},
 			Jobs:          []Job{{Name: "j1"}},
@@ -203,7 +203,7 @@ groups:
 		}
 
 		expected := `var Pipelinep1 = Pipeline{
-Name: "p1",
+Name: "p-1",
 ResourceTypes: []ResourceType{
 ResourceTypert1,
 },
@@ -219,6 +219,7 @@ Groupg1,
 }`
 
 		stepName := step1.Generate()
+		Expect(stepName).To(Equal("Pipelinep1"))
 		result, ok := NameToBlock[stepName]
 		Expect(ok).To(BeTrue())
 		GinkgoWriter.Write([]byte(result))

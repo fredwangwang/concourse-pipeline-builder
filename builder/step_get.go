@@ -94,7 +94,7 @@ func (s StepGet) Generate() string {
 		log.Fatal(err)
 	}
 
-	name := fmt.Sprintf("StepGet%s%x", s.Get, hash)
+	name := fmt.Sprintf("StepGet%s%x", sanitizeVarName(s.Get), hash)
 	parts[0] = fmt.Sprintf("var %s = StepGet{", name)
 
 	generated := strings.Join(parts, "\n")
