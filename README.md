@@ -1,6 +1,65 @@
 # Concourse Pipeline Builder
 
-This is a kinda POC thing to make the pipelines more structural.
+Pipeline as code, allows you to write pipeline in golang, which is a real programming language
+you can compose rather than patching together a thousand line yaml.
+
+## Install
+```bash
+$ go get github.com/fredwangwang/concourse-pipeline-builder
+$ concourse-pipeline-builder -h
+2018/10/02 22:53:55 Usage:
+  concourse-pipeline-builder [OPTIONS] <import>
+
+Help Options:
+  -h, --help  Show this help message
+
+Available commands:
+  import  import the existing pipeline
+```
+
+## Example Usage:
+1. Import the existing pipeline  
+Imagine you have an existing pipeline and would like to try this tool out, you can easily
+import your pipeline. Simply run:  
+`concourse-pipeline-builder import -c path/to/pipeline.yml -o output/dir -n name-of-pipeline`,
+you would get a pipeline in Go! The generated pipeline would be in `output/dir/main.go`.  
+ 
+1. Starting from scratch  
+It's easy. All you need is the following boilerplate code and it will get you started.  
+```go
+package main
+
+import (
+	"fmt"
+	. "github.com/fredwangwang/concourse-pipeline-builder/builder"
+	"gopkg.in/yaml.v2"
+	"log"
+)
+
+var pipe = Pipeline{
+	// name key is not picked up by concourse
+	// it is reserved for the code generation purpose
+	Name: "Sample-pipeline",
+	ResourceTypes: []ResourceType{},
+	Resources:[]Resource{},
+	Jobs:[]Job{},
+	Groups:[]Group{},
+}
+
+func main() {
+	content, err := yaml.Marshal(pipe)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(content))
+}
+```
+
+### Note:
+To get the yaml equivalent of the _codified_ pipeline, do `go run path/to/main.go`.
+This allows you to set the pipeline by running:
+`fly -t target sp -p pipeline -c <(go run path/to/main.go)`
+
 
 ## Why
 Concourse CI is a powerful tool, but building the pipeline may not be a pleasant process.
@@ -34,32 +93,10 @@ using a more structured language (golang), which allows:
 
 ## State
 - [x] Basic structures
-- [ ] Validation when marshaling
-- [ ] Make it a cli?
+- [ ] Validation when marshaling 
+- [ ] Make it a cli (Partially done)
+- [ ] Better structure the generated code
 - [ ] todo?
-
-## CLI Usage
-currently only `import` is implemented.
-
-```bash
-$ go run main.go import -h # print usage
-2018/10/01 00:00:37 Usage:
-  main [OPTIONS] import [import-OPTIONS]
-
-Help Options:
-  -h, --help        Show this help message
-
-[import command options]
-      -c, --config= path to the pipeline yaml
-      -n, --name=   name of the imported pipeline
-      -o, --output= path to the folder to be created
-$ go run main.go import -c your-existing-pipeline.yml -n pipeline123 -o ./test # import the pipeline
-$ ls test
-main.go
-$ go run test/main.go # print the imported pipeline to stdout
-name: pipeline123
-......
-```
 
 There are lots of improving opportunities to this command, right now it is a working prototype 
 of how I want it to work.
@@ -137,8 +174,7 @@ groups:
 ```
 
 ## Random
-* Why golang?
-
+* Why golang?  
 Why not? Regardless the things I don't like about golang, I like it in general. Maybe Ruby is a better fit,
 it does not provide strong static lint, which is one thing I want.
 
@@ -149,4 +185,4 @@ it does not provide strong static lint, which is one thing I want.
 
 ## Note
 
-Feedbacks welcome! I would also want to learn what is a good way to manage the pipelines.
+Feedback / issue / pr welcome! I would also want to learn what is a good way to manage the pipelines.
