@@ -38,26 +38,10 @@ func main() {
 }
 `
 
-//var tmpl = `
-//
-//
-//var Pipeline = %#v
-//
-//
-//`
-
 func (i *Import) Execute(args []string) error {
 	if err := validator.New().Struct(i); err != nil {
 		return err
 	}
-
-	//goPath, err := getGoPath()
-	//if err != nil {
-	//	return err
-	//}
-
-	//pkgPath := path.Join(goPath, i.Output)
-	//fmt.Printf("going to generate pipeline in %s\n", pkgPath)
 
 	if err := os.MkdirAll(i.Output, os.ModePerm); err != nil {
 		return err
@@ -100,14 +84,3 @@ func (i *Import) Execute(args []string) error {
 
 	return err
 }
-
-//func getGoPath() (string, error) {
-//	var stdout, stderr bytes.Buffer
-//	cmd := exec.Command("go", "env", "GOPATH")
-//	cmd.Stdout = &stdout
-//	cmd.Stderr = &stderr
-//	if err := cmd.Run(); err != nil {
-//		return "", fmt.Errorf("%s %s", stderr.String(), err)
-//	}
-//	return strings.TrimSpace(stdout.String()), nil
-//}
