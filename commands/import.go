@@ -79,7 +79,6 @@ func (i *Import) Execute(args []string) error {
 	// write ResourceTypes
 	it = builder.ResourceTypeNameToBlock.IterFunc()
 	for kv, ok := it(); ok; kv, ok = it() {
-		fmt.Println(kv, kv.Key, kv.Value)
 		_, err = f.WriteString(kv.Value.(string) + "\n\n")
 		if err != nil {
 			return err
@@ -89,7 +88,6 @@ func (i *Import) Execute(args []string) error {
 	// write Resources
 	it = builder.ResourceNameToBlock.IterFunc()
 	for kv, ok := it(); ok; kv, ok = it() {
-		fmt.Println(kv, kv.Key, kv.Value)
 		_, err = f.WriteString(kv.Value.(string) + "\n\n")
 		if err != nil {
 			return err
@@ -99,7 +97,6 @@ func (i *Import) Execute(args []string) error {
 	// write Jobs
 	it = builder.JobNameToBlock.IterFunc()
 	for kv, ok := it(); ok; kv, ok = it() {
-		fmt.Println(kv, kv.Key, kv.Value)
 		_, err = f.WriteString(kv.Value.(string) + "\n\n")
 		if err != nil {
 			return err
@@ -109,7 +106,6 @@ func (i *Import) Execute(args []string) error {
 	// write Steps
 	it = builder.StepNameToBlock.IterFunc()
 	for kv, ok := it(); ok; kv, ok = it() {
-		fmt.Println(kv, kv.Key, kv.Value)
 		_, err = f.WriteString(kv.Value.(string) + "\n\n")
 		if err != nil {
 			return err
@@ -119,7 +115,6 @@ func (i *Import) Execute(args []string) error {
 	// write TaskConfigs
 	it = builder.TaskConfigNameToBlock.IterFunc()
 	for kv, ok := it(); ok; kv, ok = it() {
-		fmt.Println(kv, kv.Key, kv.Value)
 		_, err = f.WriteString(kv.Value.(string) + "\n\n")
 		if err != nil {
 			return err
@@ -129,7 +124,6 @@ func (i *Import) Execute(args []string) error {
 	// write TaskImages
 	it = builder.TaskImageNameToBlock.IterFunc()
 	for kv, ok := it(); ok; kv, ok = it() {
-		fmt.Println(kv, kv.Key, kv.Value)
 		_, err = f.WriteString(kv.Value.(string) + "\n\n")
 		if err != nil {
 			return err
@@ -139,7 +133,6 @@ func (i *Import) Execute(args []string) error {
 	// write Groups
 	it = builder.GroupNameToBlock.IterFunc()
 	for kv, ok := it(); ok; kv, ok = it() {
-		fmt.Println(kv, kv.Key, kv.Value)
 		_, err = f.WriteString(kv.Value.(string) + "\n\n")
 		if err != nil {
 			return err

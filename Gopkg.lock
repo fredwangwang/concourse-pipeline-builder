@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  branch = "master"
+  digest = "1:7432634b6993a4280219c429bb1b5345444c368f59e1ee82eb9fbd9d81430d7b"
+  name = "github.com/fredwangwang/orderedmap"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "b0dc1b7b5c09abff6b518c34e9436b002c2d4d88"
+
+[[projects]]
   digest = "1:e1ff887e232b2d8f4f7c7db15a5fac7be418025afc4dda53c59c765dbb5aa6b4"
   name = "github.com/go-playground/locales"
   packages = [
@@ -181,6 +189,7 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/fredwangwang/orderedmap",
     "github.com/jessevdk/go-flags",
     "github.com/mitchellh/hashstructure",
     "github.com/onsi/ginkgo",
