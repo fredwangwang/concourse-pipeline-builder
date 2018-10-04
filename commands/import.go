@@ -3,18 +3,19 @@ package commands
 import (
 	"fmt"
 	"github.com/fredwangwang/concourse-pipeline-builder/builder"
-	"github.com/fredwangwang/orderedmap"
 	"gopkg.in/go-playground/validator.v9"
 	"gopkg.in/yaml.v2"
+	"io"
 	"io/ioutil"
 	"os"
 	"path"
 )
 
 type Import struct {
-	Config string `short:"c" long:"config" description:"path to the pipeline yaml"        required:"true"`
-	Name   string `short:"n" long:"name"   description:"name of the imported pipeline"    required:"true"`
-	Output string `short:"o" long:"output" description:"path to the folder to be created" required:"true"`
+	Config  string `short:"c" long:"config" description:"path to the pipeline yaml"        required:"true"`
+	Name    string `short:"n" long:"name"   description:"name of the imported pipeline"    required:"true"`
+	Output  string `short:"o" long:"output" description:"path to the folder to be created" required:"true"`
+	PerFile bool   `long:"per-file"         description:"put each type into its own file"`
 }
 
 const header = `
@@ -61,91 +62,250 @@ func (i *Import) Execute(args []string) error {
 
 	pipe.Name = i.Name
 
-	f, err := os.Create(path.Join(i.Output, "main.go"))
+	mainFile, err := os.Create(path.Join(i.Output, "main.go"))
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer mainFile.Close()
 
 	pipeVarName := pipe.Generate()
 
-	_, err = fmt.Fprint(f, header)
+	_, err = fmt.Fprint(mainFile, header)
 	if err != nil {
 		return err
 	}
 
-	var it func() (*orderedmap.KVPair, bool)
-
-	// write ResourceTypes
-	it = builder.ResourceTypeNameToBlock.IterFunc()
-	for kv, ok := it(); ok; kv, ok = it() {
-		_, err = f.WriteString(kv.Value.(string) + "\n\n")
-		if err != nil {
-			return err
-		}
+	err = i.WriteResourceTypes(mainFile)
+	if err != nil {
+		return err
 	}
 
-	// write Resources
-	it = builder.ResourceNameToBlock.IterFunc()
-	for kv, ok := it(); ok; kv, ok = it() {
-		_, err = f.WriteString(kv.Value.(string) + "\n\n")
-		if err != nil {
-			return err
-		}
+	err = i.WriteResources(mainFile)
+	if err != nil {
+		return err
 	}
 
-	// write Jobs
-	it = builder.JobNameToBlock.IterFunc()
-	for kv, ok := it(); ok; kv, ok = it() {
-		_, err = f.WriteString(kv.Value.(string) + "\n\n")
-		if err != nil {
-			return err
-		}
+	err = i.WriteJobs(mainFile)
+	if err != nil {
+		return err
 	}
 
-	// write Steps
-	it = builder.StepNameToBlock.IterFunc()
-	for kv, ok := it(); ok; kv, ok = it() {
-		_, err = f.WriteString(kv.Value.(string) + "\n\n")
-		if err != nil {
-			return err
-		}
+	err = i.WriteSteps(mainFile)
+	if err != nil {
+		return err
 	}
 
-	// write TaskConfigs
-	it = builder.TaskConfigNameToBlock.IterFunc()
-	for kv, ok := it(); ok; kv, ok = it() {
-		_, err = f.WriteString(kv.Value.(string) + "\n\n")
-		if err != nil {
-			return err
-		}
+	err = i.WriteTasks(mainFile)
+	if err != nil {
+		return err
 	}
 
-	// write TaskImages
-	it = builder.TaskImageNameToBlock.IterFunc()
-	for kv, ok := it(); ok; kv, ok = it() {
-		_, err = f.WriteString(kv.Value.(string) + "\n\n")
-		if err != nil {
-			return err
-		}
-	}
-
-	// write Groups
-	it = builder.GroupNameToBlock.IterFunc()
-	for kv, ok := it(); ok; kv, ok = it() {
-		_, err = f.WriteString(kv.Value.(string) + "\n\n")
-		if err != nil {
-			return err
-		}
+	err = i.WriteGroups(mainFile)
+	if err != nil {
+		return err
 	}
 
 	// write Pipeline
-	_, err = f.WriteString(builder.GeneratedPipeline + "\n\n")
+	_, err = mainFile.WriteString(builder.GeneratedPipeline + "\n\n")
 	if err != nil {
 		return err
 	}
 
-	_, err = fmt.Fprintf(f, fmt.Sprintf(mainFunc, pipeVarName))
+	_, err = fmt.Fprintf(mainFile, fmt.Sprintf(mainFunc, pipeVarName))
 
 	return err
+}
+
+func (i Import) WriteResourceTypes(f io.Writer) error {
+	var out io.Writer
+
+	if i.PerFile {
+		file, err := os.Create(path.Join(i.Output, "resource_types.go"))
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		file.WriteString(`
+package main
+
+import (
+	. "github.com/fredwangwang/concourse-pipeline-builder/builder"
+)
+`)
+		out = file
+	} else {
+		out = f
+	}
+	it := builder.ResourceTypeNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		_, err := out.Write([]byte(kv.Value.(string) + "\n\n"))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (i Import) WriteResources(f io.Writer) error {
+	var out io.Writer
+
+	if i.PerFile {
+		file, err := os.Create(path.Join(i.Output, "resources.go"))
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		file.WriteString(`
+package main
+
+import (
+	. "github.com/fredwangwang/concourse-pipeline-builder/builder"
+)
+`)
+		out = file
+	} else {
+		out = f
+	}
+	it := builder.ResourceNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		_, err := out.Write([]byte(kv.Value.(string) + "\n\n"))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (i Import) WriteJobs(f io.Writer) error {
+	var out io.Writer
+
+	if i.PerFile {
+		file, err := os.Create(path.Join(i.Output, "jobs.go"))
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		file.WriteString(`
+package main
+
+import (
+	. "github.com/fredwangwang/concourse-pipeline-builder/builder"
+)
+`)
+		out = file
+	} else {
+		out = f
+	}
+	it := builder.JobNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		_, err := out.Write([]byte(kv.Value.(string) + "\n\n"))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (i Import) WriteSteps(f io.Writer) error {
+	var out io.Writer
+
+	if i.PerFile {
+		file, err := os.Create(path.Join(i.Output, "steps.go"))
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		file.WriteString(`
+package main
+
+import (
+	. "github.com/fredwangwang/concourse-pipeline-builder/builder"
+)
+`)
+		out = file
+	} else {
+		out = f
+	}
+	it := builder.StepNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		_, err := out.Write([]byte(kv.Value.(string) + "\n\n"))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (i Import) WriteTasks(f io.Writer) error {
+	var out io.Writer
+
+	if i.PerFile {
+		file, err := os.Create(path.Join(i.Output, "tasks.go"))
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		file.WriteString(`
+package main
+
+import (
+	. "github.com/fredwangwang/concourse-pipeline-builder/builder"
+)
+`)
+		out = file
+	} else {
+		out = f
+	}
+	it := builder.TaskImageNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		_, err := out.Write([]byte(kv.Value.(string) + "\n\n"))
+		if err != nil {
+			return err
+		}
+	}
+
+	it = builder.TaskConfigNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		_, err := out.Write([]byte(kv.Value.(string) + "\n\n"))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (i Import) WriteGroups(f io.Writer) error {
+	var out io.Writer
+
+	if i.PerFile {
+		file, err := os.Create(path.Join(i.Output, "groups.go"))
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+		file.WriteString(`
+package main
+
+import (
+	. "github.com/fredwangwang/concourse-pipeline-builder/builder"
+)
+`)
+		out = file
+	} else {
+		out = f
+	}
+	it := builder.GroupNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		_, err := out.Write([]byte(kv.Value.(string) + "\n\n"))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
