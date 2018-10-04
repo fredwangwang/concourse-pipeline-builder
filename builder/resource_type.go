@@ -47,7 +47,7 @@ func (r ResourceType) Generate() string {
 
 	generated := strings.Join(parts, "\n")
 
-	NameToBlock[name] = generated
+	ResourceTypeNameToBlock.Set(name, generated)
 
 	return name
 }

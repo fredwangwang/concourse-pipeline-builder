@@ -50,7 +50,7 @@ func (r Resource) Generate() string {
 
 	generated := strings.Join(parts, "\n")
 
-	NameToBlock[name] = generated
+	ResourceNameToBlock.Set(name, generated)
 
 	return name
 }

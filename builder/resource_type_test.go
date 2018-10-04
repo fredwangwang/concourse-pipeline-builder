@@ -69,9 +69,9 @@ Tags: []string{"a", "z"},
 }`
 
 		stepName := step1.Generate()
-		result, ok := NameToBlock[stepName]
+		result, ok := ResourceTypeNameToBlock.Get(stepName)
 		Expect(ok).To(BeTrue())
-		GinkgoWriter.Write([]byte(result))
+		GinkgoWriter.Write([]byte(result.(string)))
 		Expect(result).To(Equal(expected))
 	})
 })

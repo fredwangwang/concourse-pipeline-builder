@@ -126,9 +126,9 @@ Ensure: StepGetEnsure693c228a58fc8a26,
 }`
 
 		stepName := step1.Generate()
-		result, ok := NameToBlock[stepName]
+		result, ok := JobNameToBlock.Get(stepName)
 		Expect(ok).To(BeTrue())
-		GinkgoWriter.Write([]byte(result))
+		GinkgoWriter.Write([]byte(result.(string)))
 		Expect(result).To(Equal(expected))
 	})
 })

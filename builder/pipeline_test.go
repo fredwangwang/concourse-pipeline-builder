@@ -220,8 +220,7 @@ Groupg1,
 
 		stepName := step1.Generate()
 		Expect(stepName).To(Equal("Pipelinep1"))
-		result, ok := NameToBlock[stepName]
-		Expect(ok).To(BeTrue())
+		result := GeneratedPipeline
 		GinkgoWriter.Write([]byte(result))
 		Expect(result).To(Equal(expected))
 	})

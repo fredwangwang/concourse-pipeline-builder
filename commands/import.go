@@ -3,6 +3,7 @@ package commands
 import (
 	"fmt"
 	"github.com/fredwangwang/concourse-pipeline-builder/builder"
+	"github.com/fredwangwang/orderedmap"
 	"gopkg.in/go-playground/validator.v9"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
@@ -73,11 +74,82 @@ func (i *Import) Execute(args []string) error {
 		return err
 	}
 
-	for _, block := range builder.NameToBlock {
-		_, err = f.WriteString(block + "\n\n")
+	var it func() (*orderedmap.KVPair, bool)
+
+	// write ResourceTypes
+	it = builder.ResourceTypeNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		fmt.Println(kv, kv.Key, kv.Value)
+		_, err = f.WriteString(kv.Value.(string) + "\n\n")
 		if err != nil {
 			return err
 		}
+	}
+
+	// write Resources
+	it = builder.ResourceNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		fmt.Println(kv, kv.Key, kv.Value)
+		_, err = f.WriteString(kv.Value.(string) + "\n\n")
+		if err != nil {
+			return err
+		}
+	}
+
+	// write Jobs
+	it = builder.JobNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		fmt.Println(kv, kv.Key, kv.Value)
+		_, err = f.WriteString(kv.Value.(string) + "\n\n")
+		if err != nil {
+			return err
+		}
+	}
+
+	// write Steps
+	it = builder.StepNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		fmt.Println(kv, kv.Key, kv.Value)
+		_, err = f.WriteString(kv.Value.(string) + "\n\n")
+		if err != nil {
+			return err
+		}
+	}
+
+	// write TaskConfigs
+	it = builder.TaskConfigNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		fmt.Println(kv, kv.Key, kv.Value)
+		_, err = f.WriteString(kv.Value.(string) + "\n\n")
+		if err != nil {
+			return err
+		}
+	}
+
+	// write TaskImages
+	it = builder.TaskImageNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		fmt.Println(kv, kv.Key, kv.Value)
+		_, err = f.WriteString(kv.Value.(string) + "\n\n")
+		if err != nil {
+			return err
+		}
+	}
+
+	// write Groups
+	it = builder.GroupNameToBlock.IterFunc()
+	for kv, ok := it(); ok; kv, ok = it() {
+		fmt.Println(kv, kv.Key, kv.Value)
+		_, err = f.WriteString(kv.Value.(string) + "\n\n")
+		if err != nil {
+			return err
+		}
+	}
+
+	// write Pipeline
+	_, err = f.WriteString(builder.GeneratedPipeline + "\n\n")
+	if err != nil {
+		return err
 	}
 
 	_, err = fmt.Fprintf(f, fmt.Sprintf(mainFunc, pipeVarName))

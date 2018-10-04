@@ -53,9 +53,9 @@ OnFailure: StepAggregate6ec501561a44889f,
 }`
 
 		stepName := step1.Generate()
-		result, ok := NameToBlock[stepName]
+		result, ok := StepNameToBlock.Get(stepName)
 		Expect(ok).To(BeTrue())
-		GinkgoWriter.Write([]byte(result))
+		GinkgoWriter.Write([]byte(result.(string)))
 		Expect(result).To(Equal(expected))
 	})
 })

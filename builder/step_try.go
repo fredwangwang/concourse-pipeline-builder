@@ -72,7 +72,7 @@ func (s StepTry) Generate() string {
 
 	generated := strings.Join(parts, "\n")
 
-	NameToBlock[name] = generated
+	StepNameToBlock.Set(name, generated)
 
 	return name
 }

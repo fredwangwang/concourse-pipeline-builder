@@ -113,7 +113,7 @@ func (t TaskConfig) Generate() string {
 
 	generated := strings.Join(parts, "\n")
 
-	NameToBlock[name] = generated
+	TaskConfigNameToBlock.Set(name, generated)
 
 	return name
 }
@@ -142,7 +142,7 @@ func (t TaskImageResource) Generate() string {
 
 	generated := strings.Join(parts, "\n")
 
-	NameToBlock[name] = generated
+	TaskImageNameToBlock.Set(name, generated)
 
 	return name
 }

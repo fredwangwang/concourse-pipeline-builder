@@ -86,7 +86,7 @@ func (s StepPut) Generate() string {
 
 	generated := strings.Join(parts, "\n")
 
-	NameToBlock[name] = generated
+	StepNameToBlock.Set(name, generated)
 
 	return name
 }

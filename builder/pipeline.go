@@ -109,7 +109,7 @@ func (p Pipeline) Generate() string {
 
 	generated := strings.Join(parts, "\n")
 
-	NameToBlock[name] = generated
+	GeneratedPipeline = generated
 
 	return name
 }

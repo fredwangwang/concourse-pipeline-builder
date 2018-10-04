@@ -91,7 +91,7 @@ func (j Job) Generate() string {
 
 	generated := strings.Join(parts, "\n")
 
-	NameToBlock[name] = generated
+	JobNameToBlock.Set(name, generated)
 
 	return name
 }

@@ -45,9 +45,9 @@ OnFailure: StepDoefcaa20bd1df0b03,
 }`
 
 		stepName := step1.Generate()
-		result, ok := NameToBlock[stepName]
+		result, ok := StepNameToBlock.Get(stepName)
 		Expect(ok).To(BeTrue())
-		GinkgoWriter.Write([]byte(result))
+		GinkgoWriter.Write([]byte(result.(string)))
 		Expect(result).To(Equal(expected))
 	})
 })
