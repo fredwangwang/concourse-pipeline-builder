@@ -184,7 +184,7 @@ func unmarshalStep(dst interface{}, internal interface{}, unmarshal func(interfa
 			// as that is the type being used for all intermediate Step unmarshal.
 			// The reason to have a intermediate map[string]interface{} is because
 			// there is no way to direct unmarshal the data into an interface.
-			// So additional conversion is required to perform the proper data unmarshaling.
+			// So additional conversion is required to perform the proper data unmarshalling.
 
 			// no need to check, if it is not the type expected, the program really should just
 			// stop since that is not expected at all.
