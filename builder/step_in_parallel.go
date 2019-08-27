@@ -7,13 +7,19 @@ import (
 	"strings"
 )
 
+type InParallel struct {
+	Limit    int   `yaml:"limit,omitempty"`
+	FailFast bool  `yaml:"fail_fast,omitempty"`
+	Steps    Steps `yaml:"steps,omitempty"`
+}
+
 type StepInParallel struct {
-	InParallel Steps `yaml:"in_parallel,omitempty"`
+	InParallel InParallel `yaml:"in_parallel,omitempty"`
 	StepHook   `yaml:",inline,omitempty"`
 }
 
 type _stepInParallel struct {
-	InParallel Steps `yaml:"in_parallel,omitempty"`
+	InParallel InParallel `yaml:"in_parallel,omitempty"`
 }
 
 func (s StepInParallel) StepType() string {
@@ -28,15 +34,21 @@ func (s StepInParallel) Generate() string {
 	var parts = []string{
 		"", // placeholder
 	}
-	if s.InParallel != nil {
-		parts = append(parts, "InParallel: Steps{")
 
-		for _, step := range s.InParallel {
-			stepName := step.Generate()
-			parts = append(parts, fmt.Sprintf("%s,", stepName))
-		}
-		parts = append(parts, "},")
+	parts = append(parts, "InParallel: InParallel{")
+	if s.InParallel.Limit != 0 {
+		parts = append(parts, fmt.Sprintf("Limit: %d,", s.InParallel.Limit))
 	}
+	if s.InParallel.FailFast {
+		parts = append(parts, "FailFast: true,")
+	}
+	parts = append(parts, "Steps: Steps{")
+	for _, step := range s.InParallel.Steps {
+		stepName := step.Generate()
+		parts = append(parts, fmt.Sprintf("%s,", stepName))
+	}
+	parts = append(parts, "},")
+	parts = append(parts, "},")
 
 	// add stephook
 	parts = append(parts, "StepHook:  StepHook{")

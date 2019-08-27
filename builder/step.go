@@ -133,6 +133,13 @@ func parseStep(stepMap map[string]interface{}) (Step, error) {
 			return nil, err
 		}
 		res = stepStruct
+	} else if _, ok := stepMap["in_parallel"]; ok {
+		stepStruct := StepInParallel{}
+		err = yamlTransform(stepMap, &stepStruct)
+		if err != nil {
+			return nil, err
+		}
+		res = stepStruct
 	} else if _, ok := stepMap["do"]; ok {
 		stepStruct := StepDo{}
 		err = yamlTransform(stepMap, &stepStruct)
@@ -170,9 +177,6 @@ func unmarshalStep(dst interface{}, internal interface{}, unmarshal func(interfa
 	typeInternal := reflect.TypeOf(internal).Elem()
 	valInternal := reflect.ValueOf(internal).Elem()
 
-	typeStepHook := reflect.TypeOf(stepHook)
-	valStepHook := reflect.ValueOf(stepHook)
-
 	typeStep := reflect.TypeOf(dst).Elem()
 	valStep := reflect.ValueOf(dst).Elem()
 
@@ -200,6 +204,9 @@ func unmarshalStep(dst interface{}, internal interface{}, unmarshal func(interfa
 			valStep.FieldByName(fieldName).Set(valInternal.Field(i))
 		}
 	}
+
+	typeStepHook := reflect.TypeOf(stepHook)
+	valStepHook := reflect.ValueOf(stepHook)
 
 	for i := 0; i < typeStepHook.NumField(); i++ {
 		fieldName := typeStepHook.Field(i).Name

@@ -44,6 +44,11 @@ jobs:
     - get: aggregate-get2
     on_success:
       get: on-success
+  - in_parallel:
+     fail_fast: true
+     steps:
+     - get: in_parallel-get1
+     - get: in_parallel-get2
   - task: task-one
     config:
       platform: linux
@@ -137,6 +142,19 @@ jobs:
 						StepHook: StepHook{
 							OnSuccess: StepGet{
 								Get: "on-success",
+							},
+						},
+					},
+					StepInParallel{
+						InParallel: InParallel{
+							FailFast: true,
+							Steps: Steps{
+								StepGet{
+									Get: "in_parallel-get1",
+								},
+								StepGet{
+									Get: "in_parallel-get2",
+								},
 							},
 						},
 					},
